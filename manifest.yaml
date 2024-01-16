@@ -1,0 +1,38 @@
+---
+version: 1
+applications:
+- name: cf-spring-healthcheck
+  path: target/cf-spring-healthcheck.jar
+  memory: 1GB
+  instances: 1
+  buildpacks:
+  - java_buildpack_offline
+
+  # Use Spring Boot actuators as health check probes.
+  # This endpoint has no business code and does not depend on external systems:
+  # we just want to check that the app instance is responding to inbound HTTP requests.
+  # Whenever this endpoint is not responding, the app instance is restarted.
+  health-check-type: http
+  health-check-http-endpoint: /actuator/health/liveness
+
+  # Starting with CAPI v3, you can set a readiness health check probe:
+  # the app will be routable as long as the readiness probe is "healthy".
+  # Unlike the liveness probe, you may want to check for external systems
+  # (such as a database) when computing the readiness state.
+  # Whenever the app instance is marked as non routable, it is not restarted,
+  # as we may wait for an external system to come back to a normal state.
+  # Using a readiness probe is a good way to speed up app instance recovery
+  # since there is no need to restart the process:
+  # https://docs.cloudfoundry.org/devguide/deploy-apps/healthchecks.html#understand-healthchecks
+  readiness-health-check-type: http
+  readiness-health-check-http-endpoint: /actuator/health/readiness
+
+  env:
+    # Use Java 17 for this app.
+    JBP_CONFIG_OPEN_JDK_JRE: '{ jre: { version: 17.+ } }'
+
+  services:
+  # Bind this app to a Redis database.
+  # You may create this database instance using this command:
+  # $ cf create-service p-redis shared-vm redis
+  - redis
