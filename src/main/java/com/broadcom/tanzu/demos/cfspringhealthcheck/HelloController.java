@@ -30,11 +30,15 @@ class HelloController {
         this.redis = redis;
     }
 
-    @GetMapping(value = "/", produces = MediaType.TEXT_PLAIN_VALUE)
-    ResponseEntity<String> hello() {
+    @GetMapping(value = "/", produces = MediaType.APPLICATION_JSON_VALUE)
+    ResponseEntity<Greeting> hello() {
         final Long inc = redis.opsForValue().increment("hello");
+        assert inc != null;
         return ResponseEntity.ok()
                 .header("X-Hello", String.valueOf(inc))
-                .body("Hello world!");
+                .body(new Greeting("Hello world!", inc));
+    }
+
+    record Greeting(String message, long pageViews) {
     }
 }

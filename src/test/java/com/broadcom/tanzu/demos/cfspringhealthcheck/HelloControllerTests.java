@@ -32,9 +32,13 @@ class HelloControllerTests {
 
     @Test
     void testHello() {
-        final var resp = client.getForEntity("/", String.class);
+        final var resp = client.getForEntity("/", HelloController.Greeting.class);
         assertThat(resp.getStatusCode().is2xxSuccessful()).isTrue();
-        assertThat(resp.getBody()).isEqualTo("Hello world!");
         assertThat(resp.getHeaders().getFirst("X-Hello")).isNotBlank();
+
+        final var greeting = resp.getBody();
+        assertThat(greeting).isNotNull();
+        assertThat(greeting.message()).isEqualTo("Hello world!");
+        assertThat(greeting.pageViews()).isGreaterThan(0);
     }
 }
