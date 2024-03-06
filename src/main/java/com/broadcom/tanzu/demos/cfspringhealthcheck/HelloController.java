@@ -24,9 +24,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 class HelloController {
+    private final AppInfo appInfo;
     private final StringRedisTemplate redis;
 
-    HelloController(StringRedisTemplate redis) {
+    HelloController(AppInfo appInfo, StringRedisTemplate redis) {
+        this.appInfo = appInfo;
         this.redis = redis;
     }
 
@@ -36,9 +38,9 @@ class HelloController {
         assert inc != null;
         return ResponseEntity.ok()
                 .header("X-Hello", String.valueOf(inc))
-                .body(new Greeting("Hello world!", inc));
+                .body(new Greeting(appInfo.instance(), "Hello world!", inc));
     }
 
-    record Greeting(String message, long pageViews) {
+    record Greeting(String instance, String message, long pageViews) {
     }
 }

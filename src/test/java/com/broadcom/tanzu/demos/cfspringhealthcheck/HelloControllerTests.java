@@ -24,7 +24,8 @@ import org.springframework.context.annotation.Import;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
+        properties = "app.instance=foo")
 @Import(RedisTestConfiguration.class)
 class HelloControllerTests {
     @Autowired
@@ -38,6 +39,7 @@ class HelloControllerTests {
 
         final var greeting = resp.getBody();
         assertThat(greeting).isNotNull();
+        assertThat(greeting.instance()).isEqualTo("foo");
         assertThat(greeting.message()).isEqualTo("Hello world!");
         assertThat(greeting.pageViews()).isGreaterThan(0);
     }

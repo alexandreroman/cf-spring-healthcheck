@@ -16,22 +16,5 @@
 
 package com.broadcom.tanzu.demos.cfspringhealthcheck;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Bean;
-import org.springframework.scheduling.annotation.EnableScheduling;
-
-@SpringBootApplication
-@EnableScheduling
-public class Application {
-    public static void main(String[] args) {
-        SpringApplication.run(Application.class, args);
-    }
-
-    @Bean
-    AppInfo appInfo(@Value("${spring.application.name}") String name,
-                    @Value("${app.instance}") String instance) {
-        return new AppInfo(name, instance);
-    }
+record AppInfo(String name, String instance) {
 }
