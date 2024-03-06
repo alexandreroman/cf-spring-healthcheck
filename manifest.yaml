@@ -14,6 +14,7 @@ applications:
   # Whenever this endpoint is not responding, the app instance is restarted.
   health-check-type: http
   health-check-http-endpoint: /actuator/health/liveness
+  health-check-invocation-timeout: 4
 
   # Starting with CAPI v3, you can set a readiness health check probe:
   # the app will be routable as long as the readiness probe is "healthy".
@@ -26,6 +27,7 @@ applications:
   # https://docs.cloudfoundry.org/devguide/deploy-apps/healthchecks.html#understand-healthchecks
   readiness-health-check-type: http
   readiness-health-check-http-endpoint: /actuator/health/readiness
+  readiness-health-check-invocation-timeout: 4
 
   env:
     # Use Java 17 for this app.
